@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.algaworks.algalogapi.domain.excpetion.NegocioException;
+import com.algaworks.algalogapi.domain.exception.NegocioException;
 import com.algaworks.algalogapi.domain.model.Cliente;
 import com.algaworks.algalogapi.domain.repository.ClienteRepository;
 
@@ -13,7 +13,12 @@ public class CatalogoClienteService {
 	
 	@Autowired
 	private ClienteRepository clienteRepository;
-	
+
+	public Cliente buscar(Long clienteId) {
+		return  clienteRepository.findById(clienteId)
+				.orElseThrow(() -> new NegocioException("Cliente não encontrado"));
+	}
+
 	@Transactional
 	public Cliente salvar(Cliente cliente) {
 		boolean emailEmUso = clienteRepository.findByEmail(cliente.getEmail())
