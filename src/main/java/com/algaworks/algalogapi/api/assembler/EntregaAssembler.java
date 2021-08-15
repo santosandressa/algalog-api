@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.algaworks.algalogapi.api.model.EntregaModel;
@@ -13,6 +14,7 @@ import com.algaworks.algalogapi.domain.model.Entrega;
 @Component
 public class EntregaAssembler {
 
+	@Autowired
 	private ModelMapper modelMapper;
 
 	public EntregaModel toModel(Entrega entrega) {
@@ -23,11 +25,6 @@ public class EntregaAssembler {
 		return entregas.stream().map(this::toModel).collect(Collectors.toList());
 	}
 
-	public EntregaAssembler(ModelMapper modelMapper) {
-		super();
-		this.modelMapper = modelMapper;
-	}
-	
 	public Entrega toEntity(EntregaInput  entregaInput ) {
 		return modelMapper.map(entregaInput, Entrega.class);
 	}
