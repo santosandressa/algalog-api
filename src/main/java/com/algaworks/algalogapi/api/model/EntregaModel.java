@@ -1,11 +1,14 @@
 package com.algaworks.algalogapi.api.model;
 
 import java.math.BigDecimal;
+
 import java.time.OffsetDateTime;
+
+import org.springframework.hateoas.RepresentationModel;
 
 import com.algaworks.algalogapi.domain.model.StatusEntrega;
 
-public class EntregaModel {
+public class EntregaModel extends RepresentationModel<EntregaModel> {
 	
 	private Long id;
 	private ClienteResumoModel cliente;

@@ -3,10 +3,12 @@ package com.algaworks.algalogapi.api.controller;
 import java.util.List;
 
 import javax.validation.Valid;
-
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,6 +28,7 @@ import com.algaworks.algalogapi.domain.service.SolicitacaoEntregaService;
 
 @RestController
 @RequestMapping("/entregas")
+@CrossOrigin("*")
 public class EntregaController {
 
 	@Autowired
@@ -36,7 +39,7 @@ public class EntregaController {
 
 	@Autowired
 	private EntregaAssembler entregaAssembler;
-	
+
 	@Autowired
 	private FinalizacaoEntregaService finalizacaoEntregaService;
 
@@ -49,22 +52,33 @@ public class EntregaController {
 	}
 
 	@GetMapping
-	public List<EntregaModel> listar() {
-		return entregaAssembler.toCollectionModel(entregaRepository.findAll());
+	public ResponseEntity<List<EntregaModel>> listar() {
+		List<EntregaModel> entregaList = entregaAssembler.toCollectionModel(entregaRepository.findAll());
+
+		if (entregaList.isEmpty()) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		} else {
+			for (EntregaModel entregaModel : entregaList) {
+				Long entregaId = entregaModel.getId();
+				entregaModel.add(linkTo(methodOn(EntregaController.class).buscar(entregaId)).withSelfRel());
+			}
+
+			return new ResponseEntity<List<EntregaModel>>(entregaList, HttpStatus.OK);
+		}
 	}
 
 	@GetMapping("/{entregaId}")
 	public ResponseEntity<EntregaModel> buscar(@PathVariable Long entregaId) {
 		return entregaRepository.findById(entregaId)
-				.map(entrega -> ResponseEntity.ok(entregaAssembler.toModel(entrega)))
+				.map(entrega -> ResponseEntity.ok(entregaAssembler.toModel(
+						entrega)))
 				.orElse(ResponseEntity.notFound().build());
 	}
 
-	
 	@PutMapping("/{entregaId}/finalizacao")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void finalizar(@PathVariable Long entregaId) {
 		finalizacaoEntregaService.finalizar(entregaId);
 	}
-	
+
 }

@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.RepresentationModel;
 import org.springframework.stereotype.Component;
 
 import com.algaworks.algalogapi.api.model.EntregaModel;
@@ -12,7 +13,7 @@ import com.algaworks.algalogapi.api.model.input.EntregaInput;
 import com.algaworks.algalogapi.domain.model.Entrega;
 
 @Component
-public class EntregaAssembler {
+public class EntregaAssembler extends RepresentationModel<EntregaAssembler>{
 
 	@Autowired
 	private ModelMapper modelMapper;

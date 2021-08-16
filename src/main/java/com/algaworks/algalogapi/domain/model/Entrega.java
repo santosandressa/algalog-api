@@ -18,10 +18,12 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import org.springframework.hateoas.RepresentationModel;
+
 import com.algaworks.algalogapi.domain.exception.NegocioException;
 
 @Entity
-public class Entrega {
+public class Entrega extends RepresentationModel<Entrega>{
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

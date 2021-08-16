@@ -1,9 +1,13 @@
 package com.algaworks.algalogapi.api.controller;
 
 import java.util.List;
+
 import java.util.Optional;
 
 import javax.validation.Valid;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -35,19 +39,31 @@ public class ClienteController {
 	private CatalogoClienteService clienteService;
 
 	@GetMapping
-	public List<Cliente> listar() {
-		return clienteRepository.findAll();
+	public ResponseEntity<List<Cliente>> listar() {
+		List<Cliente> clienteList = clienteRepository.findAll();
+
+		if (clienteList.isEmpty()) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		} else {
+			for (Cliente cliente : clienteList) {
+				Long id = cliente.getId();
+				cliente.add(linkTo(methodOn(ClienteController.class).buscar(id)).withSelfRel());
+			}
+
+			return new ResponseEntity<List<Cliente>>(clienteList, HttpStatus.OK);
+		}
 	}
 
 	@GetMapping("/{clienteId}")
 	public ResponseEntity<Cliente> buscar(@PathVariable Long clienteId) {
 		Optional<Cliente> cliente = clienteRepository.findById(clienteId);
 
-		if (cliente.isPresent()) {
-			return ResponseEntity.ok(cliente.get());
+		if (!cliente.isPresent()) {
+			return ResponseEntity.notFound().build();
+		} else {
+			cliente.get().add(linkTo(methodOn(ClienteController.class).listar()).withRel("Lista de Clientes"));
+			return new ResponseEntity<Cliente>(cliente.get(), HttpStatus.OK);
 		}
-
-		return ResponseEntity.notFound().build();
 	}
 
 	@PostMapping
