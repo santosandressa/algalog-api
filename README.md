@@ -2,7 +2,7 @@
 
 
 
-Api Rest desenvolvida para logistica de entregas, realizado durante o Mergulho Spring Rest da algaworks.
+Api Rest desenvolvida para logística de entregas, realizado durante o Mergulho Spring Rest da algaworks.
 
 Tecnologias:
 - Java 
