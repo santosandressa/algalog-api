@@ -11,3 +11,8 @@ Tecnologias:
 - Flyway
 - ModelMapper
 - Spring Hateoas
+
+`Documentação disponível após a inicialização em:`
+
+
+http://localhost:8080/swagger-ui.html#/
